@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LoginUser } from '../../api/auth';
 import toast from 'react-hot-toast';
+import { AccountContext } from '../../context/AccountProvider';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setAccount } = useContext(AccountContext);
   const [credentials, setCredentials] = useState({ email: '', password: '' });
 
   const handleChange = (e) => {
@@ -18,10 +20,7 @@ const Login = () => {
       const resp = await LoginUser(credentials);
       localStorage.setItem('login-token', resp.data.token);
       localStorage.setItem('user-id', resp.data.result._id);
-      if (resp.error) {
-        toast.error(resp.error);
-        return;
-      }
+      setAccount(resp.data.result);
       navigate('/');
       toast.success('Logged in!');
     } catch (err) {

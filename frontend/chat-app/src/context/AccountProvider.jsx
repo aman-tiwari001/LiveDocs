@@ -4,10 +4,22 @@ export const AccountContext = createContext(null);
 
 // eslint-disable-next-line react/prop-types
 const AccountProvider = ({ children }) => {
-  const [account, setAccount] = useState(null);
+  const [account, setAccount] = useState({name:"", email:""});
+  const [showChatBox, setShowChatBox] = useState(false);
+  const [showProfileDrawer, setShowProfileDrawer] = useState(false);
 
   return (
-    <AccountContext.Provider value={{ account, setAccount }}>
+    
+    <AccountContext.Provider
+      value={{
+        account,
+        setAccount,
+        showChatBox,
+        setShowChatBox,
+        showProfileDrawer,
+        setShowProfileDrawer,
+      }}
+    >
       {children}
     </AccountContext.Provider>
   );

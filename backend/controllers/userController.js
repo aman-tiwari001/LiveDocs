@@ -44,10 +44,20 @@ const handleUserSignUp = async (req, res) => {
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
 
+    // Generate a jwt token for registered user
+    const token = jwt.sign(
+      { userId: newUser._id },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: '7d' }
+    );
+
     res
       .status(201)
-      .json({ result: newUser, message: 'User registered successfully' });
-
+      .json({
+        result: newUser,
+        token,
+        message: 'User registered successfully',
+      });
   } catch (error) {
     console.error('Error registering user:', error);
     res.status(500).json({ error: error.message });
@@ -82,12 +92,13 @@ const handleUserLogin = async (req, res) => {
     }
 
     // Generate a JWT token with payload data
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: '7d',
+    });
 
     res
       .status(200)
       .json({ result: user, token, message: 'User logged in successfully' });
-
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ error: error.message });

@@ -1,10 +1,12 @@
-import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
 import { SignUpUser } from '../../api/auth';
+import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AccountContext } from '../../context/AccountProvider';
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { setAccount } = useContext(AccountContext);
   const [credentials, setCredentials] = useState({
     name: '',
     email: '',
@@ -16,23 +18,20 @@ const SignUp = () => {
       return { ...prevData, [e.target.name]: e.target.value };
     });
   };
-    const handleSignUp = async (e) => {
-      e.preventDefault();
-      try {
-        const resp = await SignUpUser(credentials);
-        localStorage.setItem('login-token', resp.data.token);
-        localStorage.setItem('user-id', resp.data.result._id);
-        if(resp.error) {
-          toast.error(resp.error);
-          return;
-        }
-        navigate('/');
-        toast.success('User registered!');
-      } catch (err) {
-        console.log('Error registering in ', err);
-        toast.error(err.response.data.error);
-      }
-    };
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      const resp = await SignUpUser(credentials);
+      localStorage.setItem('login-token', resp.data.token);
+      localStorage.setItem('user-id', resp.data.result._id);
+      setAccount(resp.data.result);
+      navigate('/');
+      toast.success('User registered!');
+    } catch (err) {
+      console.log('Error registering in ', err);
+      toast.error(err.response.data.error);
+    }
+  };
   return (
     <div className='bg-gray-900 text-white h-[100vh] flex flex-col justify-center items-center'>
       <h1 className='text-center mb-4'>Create ChatzApp🚀 account</h1>

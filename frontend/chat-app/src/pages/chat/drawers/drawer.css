@@ -1,0 +1,13 @@
+.prof-drawer {
+  height: 100vh;
+  position: absolute;
+  transition: left 0.4s ease-in-out;
+  left: -100%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background: rgb(17 24 39);
+}
+
+.prof-drawer-open {
+  left: -1px;
+}
